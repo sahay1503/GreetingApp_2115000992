@@ -183,6 +183,20 @@ namespace HelloGreetingApplication.Controllers
             logger.Info("Greeting request called successfully");
             return Ok(_greetingBL.GetGreetingBL());
         }
+        //UC3
+        /// <summary>
+        /// Greeting request from HelloRoute Post called
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
+        [HttpGet("hello")]
+        public IActionResult GetGreeting([FromQuery] string? firstName, [FromQuery] string? lastName)
+        {
+            logger.Info("Greeting request from HelloRoute Post called successfully");
+            string greetingMessage = _greetingBL.GetGreeting(firstName, lastName);
+            return Ok(new { Message = greetingMessage });
+        }
 
     }
 }
