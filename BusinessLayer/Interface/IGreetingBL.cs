@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ModelLayer.Model;
+using RepositoryLayer.Entity;
 
 namespace BusinessLayer.Interface
 {
@@ -11,5 +13,7 @@ namespace BusinessLayer.Interface
         string GetGreetingBL();
 
         string GetGreeting(string? firstName, string? lastName);
+
+        GreetEntity SaveGreetingBL(GreetingModel greetingModel);
     }
 }

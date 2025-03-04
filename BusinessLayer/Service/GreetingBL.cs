@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessLayer.Interface;
+using ModelLayer.Model;
+using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 
 namespace BusinessLayer.Service
@@ -55,6 +57,14 @@ namespace BusinessLayer.Service
             return greetingMessage;
         }
 
-        
+        //UC4
+
+        public GreetEntity SaveGreetingBL(GreetingModel greetingModel)
+        {
+            var result = _greetingRL.SaveGreetingRL(greetingModel);
+            return result;
+        }
+
+
     }
 }
