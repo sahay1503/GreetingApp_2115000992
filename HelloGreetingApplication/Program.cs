@@ -25,6 +25,9 @@ try
     // Add services to the container.
     builder.Services.AddControllers();
 
+    builder.Services.AddScoped<IGreetingBL, GreetingBL>();
+    builder.Services.AddScoped<IGreetingRL, GreetingRL>();
+
 
     // Configure Swagger
     builder.Services.AddEndpointsApiExplorer();
