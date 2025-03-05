@@ -65,6 +65,12 @@ namespace RepositoryLayer.Service
         }
 
         //UC7
+        /// <summary>
+        /// Edit Greeting
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="greetingModel"></param>
+        /// <returns></returns>
         public GreetEntity EditGreetingRL(int id, GreetingModel greetingModel)
         {
             var entity = _dbContext.Greet.FirstOrDefault(g => g.Id == id);
@@ -77,6 +83,26 @@ namespace RepositoryLayer.Service
             }
             return null; // If not found
         }
+
+        //UC8
+        /// <summary>
+        /// Delete Greeeting
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool DeleteGreetingRL(int id)
+        {
+            var entity = _dbContext.Greet.FirstOrDefault(g => g.Id == id);
+            if (entity != null)
+            {
+                _dbContext.Greet.Remove(entity);
+                _dbContext.SaveChanges();
+                return true; // Successfully Deleted
+            }
+            return false; // Not Found
+        }
+
+
 
 
 
