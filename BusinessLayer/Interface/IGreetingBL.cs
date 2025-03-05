@@ -16,5 +16,8 @@ namespace BusinessLayer.Interface
 
         GreetEntity SaveGreetingBL(GreetingModel greetingModel);
         GreetingModel GetGreetingByIdBL(int Id);
+
+        List<GreetingModel> GetAllGreetingsBL();
+
     }
 }
