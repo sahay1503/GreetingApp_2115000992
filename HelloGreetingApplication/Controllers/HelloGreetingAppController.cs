@@ -199,6 +199,11 @@ namespace HelloGreetingApplication.Controllers
         }
 
         //UC4
+        /// <summary>
+        /// Save a Greeting in Database
+        /// </summary>
+        /// <param name="greetingModel"></param>
+        /// <returns></returns>
 
         [HttpPost]
         [Route("save")]
@@ -282,6 +287,12 @@ namespace HelloGreetingApplication.Controllers
         }
 
         //UC7
+        /// <summary>
+        /// Edit Greeeting by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="greetModel"></param>
+        /// <returns></returns>
         [HttpPut("EditGreeting/{id}")]
         public IActionResult EditGreeting(int id, GreetingModel greetModel)
         {
@@ -309,6 +320,11 @@ namespace HelloGreetingApplication.Controllers
         }
 
         //UC8
+        /// <summary>
+        /// Deleting Greeting by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("DeleteGreeting/{id}")]
         public IActionResult DeleteGreeting(int id)
         {
