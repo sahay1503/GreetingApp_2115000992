@@ -43,6 +43,8 @@ try
 
     builder.Services.AddScoped<IGreetingBL, GreetingBL>();
     builder.Services.AddScoped<IGreetingRL, GreetingRL>();
+    builder.Services.AddScoped<IUserBL, UserBL>();
+    builder.Services.AddScoped<IUserRL, UserRL>();
 
 
     // Configure Swagger

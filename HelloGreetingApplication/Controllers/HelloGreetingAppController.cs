@@ -350,9 +350,5 @@ namespace HelloGreetingApplication.Controllers
             }
 
         }
-
-
-
-
     }
 }
