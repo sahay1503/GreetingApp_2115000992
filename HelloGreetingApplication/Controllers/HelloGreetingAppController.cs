@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ModelLayer.Model;
 using NLog; // Import NLog namespace
 using BusinessLayer.Interface;
+using Middleware.GlobalExceptionHandler;
 
 namespace HelloGreetingApplication.Controllers
 {
@@ -249,10 +250,10 @@ namespace HelloGreetingApplication.Controllers
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = $"An error occurred: {ex.Message}";
-                return StatusCode(500, response);
+                var errorResponse = ExceptionHandler.CreateErrorResponse(ex);
+                return StatusCode(500, errorResponse);
             }
+
         }
 
         //UC6
@@ -280,10 +281,10 @@ namespace HelloGreetingApplication.Controllers
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = $"An error occurred: {ex.Message}";
-                return StatusCode(500, response);
+                var errorResponse = ExceptionHandler.CreateErrorResponse(ex);
+                return StatusCode(500, errorResponse);
             }
+
         }
 
         //UC7
@@ -313,10 +314,10 @@ namespace HelloGreetingApplication.Controllers
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = $"An error occurred: {ex.Message}";
-                return StatusCode(500, response);
+                var errorResponse = ExceptionHandler.CreateErrorResponse(ex);
+                return StatusCode(500, errorResponse);
             }
+
         }
 
         //UC8
@@ -344,10 +345,10 @@ namespace HelloGreetingApplication.Controllers
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = $"An error occurred: {ex.Message}";
-                return StatusCode(500, response);
+                var errorResponse = ExceptionHandler.CreateErrorResponse(ex);
+                return StatusCode(500, errorResponse);
             }
+
         }
 
 
