@@ -1,21 +1,24 @@
 ﻿using System;
 using ModelLayer.DTO;
-using Microsoft.Extensions.Logging; // ✅ Use Microsoft ILogger
+using Microsoft.Extensions.Logging;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using BusinessLayer.Interface;
+using Middleware.JwtHelper; 
 
 namespace BusinessLayer.Service
 {
     public class UserBL : IUserBL
     {
-        private readonly ILogger<UserBL> _logger; // ✅ Correct logging
+        private readonly ILogger<UserBL> _logger;
         private readonly IUserRL _userRL;
+        private readonly JwtTokenHelper _jwtTokenHelper; 
 
-        public UserBL(IUserRL userRL, ILogger<UserBL> logger)
+        public UserBL(IUserRL userRL, ILogger<UserBL> logger, JwtTokenHelper jwtTokenHelper)
         {
             _logger = logger;
             _userRL = userRL;
+            _jwtTokenHelper = jwtTokenHelper; // ✅ Assign JWT Helper
         }
 
         public UserEntity RegistrationBL(RegisterDTO registerDTO)
@@ -23,7 +26,6 @@ namespace BusinessLayer.Service
             try
             {
                 _logger.LogInformation("Attempting to register user: {Email}", registerDTO.Email);
-
                 var result = _userRL.Registration(registerDTO);
                 if (result != null)
                 {
@@ -42,22 +44,22 @@ namespace BusinessLayer.Service
             }
         }
 
-        public UserEntity LoginnUserBL(LoginDTO loginDTO)
+        public (UserEntity user, string token) LoginnUserBL(LoginDTO loginDTO)
         {
             try
             {
                 _logger.LogInformation("Attempting to log in user: {Email}", loginDTO.Email);
+                var user = _userRL.LoginnUserRL(loginDTO);
 
-                var result = _userRL.LoginnUserRL(loginDTO);
-                if (result != null)
+                if (user != null)
                 {
                     _logger.LogInformation("Login successful for user: {Email}", loginDTO.Email);
+                    var token = _jwtTokenHelper.GenerateToken(user); 
+                    return (user, token);
                 }
-                else
-                {
-                    _logger.LogWarning("Login failed for user: {Email}", loginDTO.Email);
-                }
-                return result;
+
+                _logger.LogWarning("Login failed for user: {Email}", loginDTO.Email);
+                return (null, null);
             }
             catch (Exception ex)
             {

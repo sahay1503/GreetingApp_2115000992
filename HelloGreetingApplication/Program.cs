@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +12,7 @@ using RepositoryLayer.Service;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Contexts;
+using Middleware.JwtHelper;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Info("Starting up the application");
@@ -20,19 +21,20 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Load NLog configuration
+    // Setup NLog
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
     // Retrieve connection string
     var connectionString = builder.Configuration.GetConnectionString("GreetingAppDB");
 
-    Console.WriteLine($"Connection String: {connectionString}"); // Debugging output
-
     if (string.IsNullOrEmpty(connectionString))
     {
-        throw new InvalidOperationException("Connection string 'GreetingAppDB' not found in appsettings.json.");
+        logger.Error("Connection string 'GreetingAppDB' not found in appsettings.json.");
+        throw new InvalidOperationException("Connection string 'GreetingAppDB' not found.");
     }
+
+    logger.Info("Database connection string loaded successfully.");
 
     // Register services
     builder.Services.AddControllers();
@@ -41,11 +43,14 @@ try
     builder.Services.AddDbContext<GreetingAppContext>(options =>
         options.UseSqlServer(connectionString));
 
+    // Register Business & Repository Layer
     builder.Services.AddScoped<IGreetingBL, GreetingBL>();
     builder.Services.AddScoped<IGreetingRL, GreetingRL>();
     builder.Services.AddScoped<IUserBL, UserBL>();
     builder.Services.AddScoped<IUserRL, UserRL>();
 
+    // ✅ Register JwtTokenHelper as Singleton (Best practice)
+    builder.Services.AddSingleton<JwtTokenHelper>();
 
     // Configure Swagger
     builder.Services.AddEndpointsApiExplorer();
@@ -64,17 +69,21 @@ try
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Registration API v1"));
     }
 
-    // Configure the HTTP request pipeline
+    // ✅ Middleware Configuration
     app.UseHttpsRedirection();
+
+    // ✅ Authentication should come before Authorization
+    app.UseAuthentication();
     app.UseAuthorization();
+
     app.MapControllers();
 
+    logger.Info("Application started successfully.");
     app.Run();
 }
 catch (Exception ex)
 {
-    logger.Error(ex, "Application startup failed.");
-    throw;
+    logger.Fatal(ex, "Application startup failed.");
 }
 finally
 {
