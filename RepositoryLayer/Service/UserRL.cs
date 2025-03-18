@@ -84,5 +84,28 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
+
+        public bool ValidateEmail(string email)
+        {
+            var data = _dbContext.Users.FirstOrDefault(e => e.Email == email);
+
+            if (data == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public UserEntity FindByEmail(string email)
+        {
+            return _dbContext.Users.FirstOrDefault(e => e.Email == email);
+        }
+
+        public bool Update(UserEntity user)
+        {
+            _dbContext.Users.Update(user);
+            _dbContext.SaveChanges();
+            return true;
+        }
     }
 }

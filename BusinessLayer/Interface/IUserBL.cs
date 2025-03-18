@@ -12,5 +12,11 @@ namespace BusinessLayer.Interface
     {
         UserEntity RegistrationBL(RegisterDTO registerDTO);
         (UserEntity user, string token) LoginnUserBL(LoginDTO loginDTO);
+
+        public bool ValidateEmail(string email);
+
+        public bool UpdateUserPassword(string email, string newPassword);
+
+        public UserEntity GetByEmail(string email);
     }
 }
