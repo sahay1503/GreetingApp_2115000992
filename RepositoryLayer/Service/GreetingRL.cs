@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Contexts;
 using ModelLayer.Model;
-using RepositoryLayer.Entity;
+using ModelLayer.Entity;
 using NLog;
 
 namespace RepositoryLayer.Service
@@ -31,27 +31,29 @@ namespace RepositoryLayer.Service
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        //UC4
-        /// <summary>
-        /// for saving Greeting in database
-        /// </summary>
-        /// <param name="greetingModel"></param>
-        /// <returns></returns>
+        // UC4 - Save Greeting
         public GreetEntity SaveGreetingRL(GreetingModel greetingModel)
         {
             try
             {
-                var existingMessage = _dbContext.Greet.FirstOrDefault(e => e.Id == greetingModel.Id);
-                if (existingMessage == null)
+                bool userExists = _dbContext.Users.Any(u => u.UserId == greetingModel.Uid);
+                if (!userExists)
                 {
-                    var newMessage = new GreetEntity { Message = greetingModel.Message };
-                    _dbContext.Greet.Add(newMessage);
-                    _dbContext.SaveChanges();
-                    Logger.Info("Greeting saved successfully with ID: {0}", newMessage.Id);
-                    return newMessage;
+                    Logger.Warn("User with ID: {0} not found. Cannot save greeting.", greetingModel.Uid);
+                    return null;
                 }
-                Logger.Warn("Greeting already exists with ID: {0}", greetingModel.Id);
-                return existingMessage;
+
+                var newMessage = new GreetEntity
+                {
+                    Message = greetingModel.Message,
+                    UserId = greetingModel.Uid // Ensure UserId is assigned
+                };
+
+                _dbContext.Greet.Add(newMessage);
+                _dbContext.SaveChanges();
+
+                Logger.Info("Greeting saved successfully with ID: {0}", newMessage.Id);
+                return newMessage;
             }
             catch (Exception ex)
             {
@@ -60,12 +62,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        //UC5
-        /// <summary>
-        /// for getting Greeting Message By ID from database
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
+        // UC5 - Get Greeting by ID
         public GreetingModel GetGreetingByIdRL(int Id)
         {
             try
@@ -74,7 +71,12 @@ namespace RepositoryLayer.Service
                 if (entity != null)
                 {
                     Logger.Info("Greeting fetched successfully for ID: {0}", Id);
-                    return new GreetingModel { Id = entity.Id, Message = entity.Message };
+                    return new GreetingModel
+                    {
+                        Id = entity.Id,
+                        Message = entity.Message,
+                        Uid = entity.UserId // Ensure Uid is included
+                    };
                 }
                 Logger.Warn("Greeting not found for ID: {0}", Id);
                 return null;
@@ -86,11 +88,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        //UC6
-        /// <summary>
-        /// For Getting All Greetings from Database
-        /// </summary>
-        /// <returns>List of Greetings</returns>
+        // UC6 - Get All Greetings
         public List<GreetEntity> GetAllGreetingsRL()
         {
             try
@@ -106,26 +104,31 @@ namespace RepositoryLayer.Service
             }
         }
 
-        //UC7
-        /// <summary>
-        /// Editing Greeting
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="greetingModel"></param>
-        /// <returns></returns>
+        // UC7 - Edit Greeting
         public GreetEntity EditGreetingRL(int id, GreetingModel greetingModel)
         {
             try
             {
+                bool userExists = _dbContext.Users.Any(u => u.UserId == greetingModel.Uid);
+                if (!userExists)
+                {
+                    Logger.Warn("User with ID: {0} not found. Cannot update greeting.", greetingModel.Uid);
+                    return null;
+                }
+
                 var entity = _dbContext.Greet.FirstOrDefault(g => g.Id == id);
                 if (entity != null)
                 {
                     entity.Message = greetingModel.Message;
+                    entity.UserId = greetingModel.Uid; // Ensure UserId is updated
+
                     _dbContext.Greet.Update(entity);
                     _dbContext.SaveChanges();
+
                     Logger.Info("Greeting updated successfully for ID: {0}", id);
                     return entity;
                 }
+
                 Logger.Warn("Greeting not found for ID: {0} to update", id);
                 return null;
             }
@@ -136,12 +139,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        //UC8
-        /// <summary>
-        /// Delete Greeting
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        // UC8 - Delete Greeting
         public bool DeleteGreetingRL(int id)
         {
             try

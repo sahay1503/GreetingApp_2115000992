@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BusinessLayer.Interface;
 using ModelLayer.Model;
-using RepositoryLayer.Entity;
+using ModelLayer.Entity;
 using RepositoryLayer.Interface;
 using NLog;
 
@@ -76,124 +76,68 @@ namespace BusinessLayer.Service
         }
 
         //UC4
-        /// <summary>
-        /// Saves a greeting message in the database
-        /// </summary>
-        /// <param name="greetingModel"></param>
-        /// <returns>Saved GreetEntity</returns>
         public GreetEntity SaveGreetingBL(GreetingModel greetingModel)
         {
-            try
-            {
-                var result = _greetingRL.SaveGreetingRL(greetingModel);
-                Logger.Info("Greeting saved successfully with ID: {0}", result.Id);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while saving greeting.");
-                throw;
-            }
+            Logger.Info("Saving greeting: {0}", greetingModel.Message);
+            var result = _greetingRL.SaveGreetingRL(greetingModel);
+            return result;
         }
 
         //UC5
-        /// <summary>
-        /// Retrieves a greeting by ID
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns>GreetingModel</returns>
+
         public GreetingModel GetGreetingByIdBL(int Id)
         {
-            try
-            {
-                var result = _greetingRL.GetGreetingByIdRL(Id);
-                Logger.Info("Fetched greeting for ID: {0}", Id);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while fetching greeting by ID: {0}", Id);
-                throw;
-            }
+            Logger.Info("Fetching greeting by ID: {0}", Id);
+            return _greetingRL.GetGreetingByIdRL(Id);
         }
+
+
+
+
 
         //UC6
-        /// <summary>
-        /// Retrieves all greetings from the database
-        /// </summary>
-        /// <returns>List of GreetingModel</returns>
         public List<GreetingModel> GetAllGreetingsBL()
         {
-            try
+            Logger.Info("Fetching all greetings.");
+            var entityList = _greetingRL.GetAllGreetingsRL();
+            if (entityList != null)
             {
-                var entityList = _greetingRL.GetAllGreetingsRL();
-                if (entityList != null)
+                return entityList.Select(g => new GreetingModel
                 {
-                    var greetings = entityList.Select(g => new GreetingModel { Id = g.Id, Message = g.Message }).ToList();
-                    Logger.Info("Fetched all greetings successfully. Total Count: {0}", greetings.Count);
-                    return greetings;
-                }
-                Logger.Warn("No greetings found in the database.");
-                return null;
+                    Id = g.Id,
+                    Message = g.Message,
+                    Uid = g.UserId // Ensure Uid is included
+                }).ToList();
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while fetching all greetings.");
-                throw;
-            }
+            return null;
         }
+
+
 
         //UC7
-        /// <summary>
-        /// Updates a greeting message
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="greetingModel"></param>
-        /// <returns>Updated GreetingModel</returns>
         public GreetingModel EditGreetingBL(int id, GreetingModel greetingModel)
         {
-            try
+            Logger.Info("Editing greeting ID: {0}", id);
+            var result = _greetingRL.EditGreetingRL(id, greetingModel);
+            if (result != null)
             {
-                var result = _greetingRL.EditGreetingRL(id, greetingModel);
-                if (result != null)
+                return new GreetingModel()
                 {
-                    Logger.Info("Greeting updated successfully for ID: {0}", id);
-                    return new GreetingModel { Id = result.Id, Message = result.Message };
-                }
-                Logger.Warn("Greeting not found for ID: {0} to update", id);
-                return null;
+                    Id = result.Id,
+                    Message = result.Message,
+                    Uid = result.UserId // Ensure Uid is returned
+                };
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while updating greeting with ID: {0}", id);
-                throw;
-            }
+            return null;
         }
 
+
         //UC8
-        /// <summary>
-        /// Deletes a greeting message
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Boolean indicating success</returns>
         public bool DeleteGreetingBL(int id)
         {
-            try
-            {
-                var result = _greetingRL.DeleteGreetingRL(id);
-                if (result)
-                {
-                    Logger.Info("Greeting deleted successfully for ID: {0}", id);
-                    return true;
-                }
-                Logger.Warn("Greeting not found for ID: {0} to delete", id);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Error while deleting greeting with ID: {0}", id);
-                throw;
-            }
+            Logger.Info("Deleting greeting ID: {0}", id);
+            var result = _greetingRL.DeleteGreetingRL(id);
+            return result;
         }
     }
 }

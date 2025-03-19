@@ -1,7 +1,7 @@
 ﻿using System;
 using ModelLayer.DTO;
 using Microsoft.Extensions.Logging;
-using RepositoryLayer.Entity;
+using ModelLayer.Entity;
 using RepositoryLayer.Interface;
 using BusinessLayer.Interface;
 using Middleware.JwtHelper; 
