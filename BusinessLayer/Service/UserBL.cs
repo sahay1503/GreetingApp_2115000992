@@ -13,14 +13,23 @@ namespace BusinessLayer.Service
         private readonly ILogger<UserBL> _logger;
         private readonly IUserRL _userRL;
         private readonly JwtTokenHelper _jwtTokenHelper; 
-
+        /// <summary>
+        /// Constructor of UserBL
+        /// </summary>
+        /// <param name="userRL"></param>
+        /// <param name="logger"></param>
+        /// <param name="jwtTokenHelper"></param>
         public UserBL(IUserRL userRL, ILogger<UserBL> logger, JwtTokenHelper jwtTokenHelper)
         {
             _logger = logger;
             _userRL = userRL;
             _jwtTokenHelper = jwtTokenHelper; 
         }
-
+        /// <summary>
+        /// Registration method
+        /// </summary>
+        /// <param name="registerDTO"></param>
+        /// <returns></returns>
         public UserEntity RegistrationBL(RegisterDTO registerDTO)
         {
             try
@@ -43,7 +52,11 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-
+        /// <summary>
+        /// Login User Method 
+        /// </summary>
+        /// <param name="loginDTO"></param>
+        /// <returns></returns>
         public (UserEntity user, string token) LoginnUserBL(LoginDTO loginDTO)
         {
             try
@@ -67,7 +80,12 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update User Password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
         public bool UpdateUserPassword(string email, string newPassword)
         {
             // Lookup user by email
@@ -78,12 +96,20 @@ namespace BusinessLayer.Service
             user.Password = newPassword;
             return _userRL.Update(user);
         }
-
+        /// <summary>
+        /// Get by Email Method 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public UserEntity GetByEmail(string email)
         {
             return _userRL.FindByEmail(email);
         }
-
+        /// <summary>
+        /// Validate Email Method
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool ValidateEmail(string email)
         {
             return _userRL.ValidateEmail(email);

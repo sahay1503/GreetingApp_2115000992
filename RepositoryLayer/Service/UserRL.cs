@@ -61,7 +61,11 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-
+        /// <summary>
+        /// Login User Method
+        /// </summary>
+        /// <param name="loginDTO"></param>
+        /// <returns></returns>
         public UserEntity LoginnUserRL(LoginDTO loginDTO)
         {
             try
@@ -84,7 +88,11 @@ namespace RepositoryLayer.Service
                 throw;
             }
         }
-
+        /// <summary>
+        /// Validate Email Method
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public bool ValidateEmail(string email)
         {
             var data = _dbContext.Users.FirstOrDefault(e => e.Email == email);
@@ -95,12 +103,20 @@ namespace RepositoryLayer.Service
             }
             return true;
         }
-
+        /// <summary>
+        /// Find By Email Method
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public UserEntity FindByEmail(string email)
         {
             return _dbContext.Users.FirstOrDefault(e => e.Email == email);
         }
-
+        /// <summary>
+        /// Update Method
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public bool Update(UserEntity user)
         {
             _dbContext.Users.Update(user);

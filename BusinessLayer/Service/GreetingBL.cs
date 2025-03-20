@@ -76,6 +76,11 @@ namespace BusinessLayer.Service
         }
 
         //UC4
+        /// <summary>
+        /// Save greeting Method
+        /// </summary>
+        /// <param name="greetingModel"></param>
+        /// <returns></returns>
         public GreetEntity SaveGreetingBL(GreetingModel greetingModel)
         {
             Logger.Info("Saving greeting: {0}", greetingModel.Message);
@@ -84,6 +89,11 @@ namespace BusinessLayer.Service
         }
 
         //UC5
+        /// <summary>
+        /// Get Greeting by ID BL Method
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
 
         public GreetingModel GetGreetingByIdBL(int Id)
         {
@@ -96,6 +106,10 @@ namespace BusinessLayer.Service
 
 
         //UC6
+        /// <summary>
+        /// Get ALl Greetings
+        /// </summary>
+        /// <returns></returns>
         public List<GreetingModel> GetAllGreetingsBL()
         {
             Logger.Info("Fetching all greetings.");
@@ -115,6 +129,12 @@ namespace BusinessLayer.Service
 
 
         //UC7
+        /// <summary>
+        /// Edit Greeting BL Method
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="greetingModel"></param>
+        /// <returns></returns>
         public GreetingModel EditGreetingBL(int id, GreetingModel greetingModel)
         {
             Logger.Info("Editing greeting ID: {0}", id);
@@ -133,6 +153,11 @@ namespace BusinessLayer.Service
 
 
         //UC8
+        /// <summary>
+        /// Delete Greeting Method
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public bool DeleteGreetingBL(int id)
         {
             Logger.Info("Deleting greeting ID: {0}", id);
